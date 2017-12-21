@@ -9,6 +9,7 @@ function app(people){
     case 'yes':
     // TODO: search by name
     var foundPerson = searchByName(people);
+    mainMenu(foundPerson[0],people)
     break;
     case 'no':
     // TODO: search by traits
