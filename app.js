@@ -83,7 +83,8 @@ function displayPerson(person){
   personInfo += "Last Name: " + person.lastName + "\n";
   personInfo += "Gender: " + uppercaseWords(person.gender) + "\n";
   personInfo += "Date of Birth: " + person.dob + "\n";
-  personInfo += "Height: " + person.height + " in.\n";
+  personInfo += "Age: " + getAge(person.dob) + "\n";
+  personInfo += "Height: " + convertToFeetandInches(person.height) + "\n";
   personInfo += "Weight: " + person.weight + " lbs\n";
   personInfo += "Eye Color: " + uppercaseWords(person.eyeColor) + "\n";
   personInfo += "Occupation: " + uppercaseWords(person.occupation) + "\n";
@@ -125,4 +126,44 @@ function uppercaseWords(phrase) {
     }
   }
   return upperCasePhrase;
+}
+
+function convertToFeetandInches(height) {
+  var feet = Math.floor(height / 12);
+  var inches = height % 12;
+  return feet + "'" + inches + "\"";
+}
+
+function getAge(stringDob) {
+  var currentDate = new Date();
+  var dateDob = new Date(stringDob);
+  var currentDateBreakdown = breakdownDate(currentDate);
+  var dateDobBreakdown = breakdownDate(dateDob);
+  var age;
+  if (currentDateBreakdown.month === dateDobBreakdown.month) {
+    if (currentDateBreakdown.day >= dateDobBreakdown.day) {
+      age = currentDateBreakdown.year - dateDobBreakdown.year;
+    }
+    else {
+      age = currentDateBreakdown.year - dateDobBreakdown.year - 1;
+    }
+  }
+  else if (currentDateBreakdown.month > dateDobBreakdown.month) {
+    age = currentDateBreakdown.year - dateDobBreakdown.year;
+  }
+  else if (currentDateBreakdown.month < dateDobBreakdown.month) {
+    age = currentDateBreakdown.year - dateDobBreakdown.year - 1;
+  }
+
+
+  return age;
+}
+
+function breakdownDate(date) {
+  var dateBreakdown = {
+    year: date.getFullYear(),
+    month: date.getMonth(),
+    day: date.getDate()
+  }
+  return dateBreakdown;
 }
