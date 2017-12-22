@@ -9,7 +9,7 @@ function app(people){
     case 'yes':
     // TODO: search by name
     var foundPerson = searchByName(people);
-    mainMenu(foundPerson[0],people)
+    mainMenu(foundPerson[0],people);
     break;
     case 'no':
     // TODO: search by traits
@@ -35,6 +35,7 @@ function mainMenu(person, people){
   switch(displayOption){
     case "info":
     // TODO: get person's info
+      displayPerson(person);
     break;
     case "family":
     // TODO: get person's family
@@ -80,6 +81,12 @@ function displayPerson(person){
   // height, weight, age, name, occupation, eye color.
   var personInfo = "First Name: " + person.firstName + "\n";
   personInfo += "Last Name: " + person.lastName + "\n";
+  personInfo += "Gender: " + uppercaseWords(person.gender) + "\n";
+  personInfo += "Date of Birth: " + person.dob + "\n";
+  personInfo += "Height: " + person.height + " in.\n";
+  personInfo += "Weight: " + person.weight + " lbs\n";
+  personInfo += "Eye Color: " + uppercaseWords(person.eyeColor) + "\n";
+  personInfo += "Occupation: " + uppercaseWords(person.occupation) + "\n";
   // TODO: finish getting the rest of the information to display
   alert(personInfo);
 }
@@ -100,4 +107,22 @@ function yesNo(input){
 // helper function to pass in as default promptFor validation
 function chars(input){
   return true; // default validation only
+}
+
+function searchByCharacteristics(argument) {
+  // body...
+}
+
+function uppercaseWords(phrase) {
+  var phraseLength = phrase.length;
+  var upperCasePhrase = "";
+  for(var x in phrase){
+    if (x==0||phrase.charAt(x-1)===" ") {
+      upperCasePhrase = upperCasePhrase + phrase.charAt(x).toUpperCase();
+    }
+    else{
+      upperCasePhrase = upperCasePhrase + phrase.charAt(x);
+    }
+  }
+  return upperCasePhrase;
 }
