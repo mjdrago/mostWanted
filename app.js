@@ -39,6 +39,7 @@ function mainMenu(person, people){
     break;
     case "family":
     // TODO: get person's family
+      getFamily(person, people);
     break;
     case "descendants":
     // TODO: get person's descendants
@@ -154,8 +155,6 @@ function getAge(stringDob) {
   else if (currentDateBreakdown.month < dateDobBreakdown.month) {
     age = currentDateBreakdown.year - dateDobBreakdown.year - 1;
   }
-
-
   return age;
 }
 
@@ -166,4 +165,43 @@ function breakdownDate(date) {
     day: date.getDate()
   }
   return dateBreakdown;
+}
+
+function getFamily(person, people) {
+  var familyInfo = getSpouse(person.currentSpouse,people) ;
+
+  alert(familyInfo);
+  
+}
+function getSpouse(spouseId, people) {
+  if (spouseId == null) {
+    return  "Currently not married"
+  }
+  else {
+    var spouse = people.filter(function(person) {
+      if (person.id == spouseId) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    })
+    return "Spouse: " + spouse[0].firstName + " " + spouse[0].lastName;
+  }
+}
+function getChildren(childrenID,people) {
+  // body...
+}
+function getParents(parentID, people) {
+  var parentArray = [];
+  for (var parent in parentID) {
+    parentArray.push(people.filter(function(person){
+      if (person.id == parentID[parent]) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }))
+  }
 }
