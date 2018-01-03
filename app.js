@@ -169,16 +169,22 @@ function breakdownDate(date) {
 
 function getFamily(person, people) {
   var familyInfoArray = people.filter(function(familyMember){
-    if (person.currentSpouse == familyMember.id ||
-        person.parents == familyMember.id ||
-        (person.parents == familyMember.parents && person.id != familyMember.id ) ||
-        familyMember.parents.indexOf(person.id) > -1
-        ) {
-      return true;
+    for(var parentIndex in person.parents) {
+      if (person.parents[parentIndex] == familyMember.id) {
+        return true;
+      }
+      else if (person.currentSpouse == familyMember.id ||
+              person.parents[parentIndex] == familyMember.id||
+              (familyMember.parents.indexOf(person.parents[parentIndex]) > -1 && person.id != familyMember.id ) ||
+              familyMember.parents.indexOf(person.id) > -1
+              ) {
+        return true;
+      }
+      else {
+        return false
+      }
     }
-    else {
-      return false
-    }
+    
   })
   displayPeople(familyInfoArray)
   //var familyInfo = getSpouse(person.currentSpouse,people) ;
