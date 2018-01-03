@@ -168,14 +168,27 @@ function breakdownDate(date) {
 }
 
 function getFamily(person, people) {
-  var familyInfo = getSpouse(person.currentSpouse,people) ;
-
-  alert(familyInfo);
+  var familyInfoArray = people.filter(function(familyMember){
+    if (person.currentSpouse == familyMember.id ||
+        person.parents == familyMember.id ||
+        (person.parents == familyMember.parents && person.id != familyMember.id ) ||
+        familyMember.parents.indexOf(person.id) > -1
+        ) {
+      return true;
+    }
+    else {
+      return false
+    }
+  })
+  displayPeople(familyInfoArray)
+  //var familyInfo = getSpouse(person.currentSpouse,people) ;
+  //familyInfo += getParents(person.parents, people);
+  //alert(familyInfo);
   
 }
 function getSpouse(spouseId, people) {
   if (spouseId == null) {
-    return  "Currently not married"
+    return  "Currently not married.\n";
   }
   else {
     var spouse = people.filter(function(person) {
@@ -186,7 +199,7 @@ function getSpouse(spouseId, people) {
         return false;
       }
     })
-    return "Spouse: " + spouse[0].firstName + " " + spouse[0].lastName;
+    return "Spouse: " + spouse[0].firstName + " " + spouse[0].lastName + "\n";
   }
 }
 function getChildren(childrenID,people) {
@@ -194,14 +207,25 @@ function getChildren(childrenID,people) {
 }
 function getParents(parentID, people) {
   var parentArray = [];
-  for (var parent in parentID) {
-    parentArray.push(people.filter(function(person){
-      if (person.id == parentID[parent]) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }))
+  var parentResponse;
+  if (parentID.length === 0) {
+    return "No parents listed.\n";
+  }
+  else {
+    for (var parent in parentID) {
+      parentArray.push(people.filter(function(person){
+        if (person.id == parentID[parent]) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }))
+    }
+    parentResponse = "Parent(s): \n";
+    for (var actualParentIndex in parentArray) {
+      parentResponse += "    " + parentArray[actualParentIndex].firstName + " " + parentArray[actualParentIndex].lastName + "\n";
+    }
+    return parentResponse;
   }
 }
