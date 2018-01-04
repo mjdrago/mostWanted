@@ -13,6 +13,7 @@ function app(people){
     break;
     case 'no':
     // TODO: search by traits
+    findMenu(people);
     break;
     default:
     app(people); // restart app
@@ -36,24 +37,51 @@ function mainMenu(person, people){
     case "info":
     // TODO: get person's info
       displayPerson(person);
-    break;
+      break;
     case "family":
     // TODO: get person's family
       getFamily(person, people);
-    break;
+      break;
     case "descendants":
     // TODO: get person's descendants
       displayPeople(getDescendants(person,people));
-    break;
+      break;
     case "restart":
-    app(people); // restart
-    break;
+      app(people); // restart
+      break;
     case "quit":
-    return; // stop execution
+      return; // stop execution
     default:
-    return mainMenu(person, people); // ask again
+      return mainMenu(person, people); // ask again
   }
 }
+function findMenu(people) {
+  var displayOption = prompt("Enter which trait you would like to search for (type the word in parantheses):\n" +
+                             "- Age (age)\n" +
+                             "- Height in inches (height)\n" +
+                             "- Weight in pounds (weight)\n" +
+                             "- Occupation (occupation)\n" +
+                             "- Eye Color (color)\n" +
+                             "When all criteria have been entered type 'done' to view results.\n" +
+                             "Otherwise type 'restart' or 'quit'")
+  switch(displayOption){
+    case "age":
+      break;
+    case "height":
+    case "weight":
+    case "occupation":
+    case "color":
+    case "done":
+    case "restart":
+      app(people); // restart
+      break;
+    case "quit":
+      return; // stop execution
+    default:
+      return findMenu(people);
+  }
+}
+
 
 function searchByName(people){
   var firstName = promptFor("What is the person's first name?", chars);
