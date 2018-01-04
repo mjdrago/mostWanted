@@ -168,70 +168,60 @@ function breakdownDate(date) {
 }
 
 function getFamily(person, people) {
-  var familyInfoArray = people.filter(function(familyMember){
-    for(var parentIndex in person.parents) {
-      if (person.parents[parentIndex] == familyMember.id) {
-        return true;
-      }
-      else if (person.currentSpouse == familyMember.id ||
-              person.parents[parentIndex] == familyMember.id||
-              (familyMember.parents.indexOf(person.parents[parentIndex]) > -1 && person.id != familyMember.id ) ||
-              familyMember.parents.indexOf(person.id) > -1
-              ) {
-        return true;
-      }
-      else {
-        return false
-      }
+  var familyValues = getFamilyIds(person);
+  var familyInfoArray = [];
+  for (var familyIndex in familyValues) {
+    var potentialFamilyMembers = searchForFamily(familyValues[familyIndex],people);
+    var newFamilyMembers = checkNewFamilyMembers(potentialFamilyMembers,person,getAllIds(familyInfoArray));
+    familyInfoArray = familyInfoArray.concat(newFamilyMembers);
+  }
+  displayPeople(familyInfoArray);  
+}
+
+function getFamilyIds(person) {
+  var familyValues = [];
+  familyValues.push(person.id);
+  if (person.parents.length != 0) {
+    for (var parentIndex in person.parents) {
+      familyValues.push(person.parents[parentIndex]);
     }
-    
+  }
+  return familyValues;
+}
+
+function searchForFamily(familyId,people) {
+  var potentialFamilyMembers = people.filter(function(person){
+    if (person.id === familyId ||
+        person.currentSpouse === familyId ||
+        person.parents.indexOf(familyId) > -1
+      ) {
+      return true;
+    }
+    else {
+      return false;
+    }
   })
-  displayPeople(familyInfoArray)
-  //var familyInfo = getSpouse(person.currentSpouse,people) ;
-  //familyInfo += getParents(person.parents, people);
-  //alert(familyInfo);
-  
+  return potentialFamilyMembers;
 }
-function getSpouse(spouseId, people) {
-  if (spouseId == null) {
-    return  "Currently not married.\n";
+
+function getAllIds(people) {
+  var allIds = [];
+  for (var personIndex in people) {
+    allIds.push(people[personIndex].id);
   }
-  else {
-    var spouse = people.filter(function(person) {
-      if (person.id == spouseId) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    })
-    return "Spouse: " + spouse[0].firstName + " " + spouse[0].lastName + "\n";
-  }
+  return allIds;
 }
-function getChildren(childrenID,people) {
-  // body...
-}
-function getParents(parentID, people) {
-  var parentArray = [];
-  var parentResponse;
-  if (parentID.length === 0) {
-    return "No parents listed.\n";
-  }
-  else {
-    for (var parent in parentID) {
-      parentArray.push(people.filter(function(person){
-        if (person.id == parentID[parent]) {
-          return true;
-        }
-        else {
-          return false;
-        }
-      }))
+
+function checkNewFamilyMembers(potentialFamilyMembers,person,listOfFamilyMembers) {
+  var newFamilyMembers = potentialFamilyMembers.filter(function(familyMember){
+    if (familyMember.id === person.id ||
+        listOfFamilyMembers.indexOf(familyMember.id) > -1) {
+      return false;
     }
-    parentResponse = "Parent(s): \n";
-    for (var actualParentIndex in parentArray) {
-      parentResponse += "    " + parentArray[actualParentIndex].firstName + " " + parentArray[actualParentIndex].lastName + "\n";
+    else {
+      return true;
     }
-    return parentResponse;
-  }
+  })
+  return newFamilyMembers;
 }
+
