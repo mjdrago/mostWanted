@@ -13,7 +13,7 @@ function app(people){
     break;
     case 'no':
     // TODO: search by traits
-    findMenu(people);
+    searchByCharacteristics(people);
     break;
     default:
     app(people); // restart app
@@ -55,33 +55,6 @@ function mainMenu(person, people){
       return mainMenu(person, people); // ask again
   }
 }
-function findMenu(people) {
-  var displayOption = prompt("Enter which trait you would like to search for (type the word in parantheses):\n" +
-                             "- Age (age)\n" +
-                             "- Height in inches (height)\n" +
-                             "- Weight in pounds (weight)\n" +
-                             "- Occupation (occupation)\n" +
-                             "- Eye Color (color)\n" +
-                             "When all criteria have been entered type 'done' to view results.\n" +
-                             "Otherwise type 'restart' or 'quit'")
-  switch(displayOption){
-    case "age":
-      break;
-    case "height":
-    case "weight":
-    case "occupation":
-    case "color":
-    case "done":
-    case "restart":
-      app(people); // restart
-      break;
-    case "quit":
-      return; // stop execution
-    default:
-      return findMenu(people);
-  }
-}
-
 
 function searchByName(people){
   var firstName = promptFor("What is the person's first name?", chars);
@@ -140,8 +113,41 @@ function chars(input){
   return true; // default validation only
 }
 
-function searchByCharacteristics(argument) {
-  // body...
+function searchByCharacteristics(people) {
+  var displayOption = prompt("There are " + people.length + " people in the reamining in the database.\n" +
+                             "Enter which trait you would like to search for (type the word in parantheses):\n" +
+                             "- Age (age)\n" +
+                             "- Height in inches (height)\n" +
+                             "- Weight in pounds (weight)\n" +
+                             "- Occupation (occupation)\n" +
+                             "- Eye Color (color)\n" +
+                             "When all criteria have been entered type 'done' to view results.\n" +
+                             "Otherwise type 'restart' or 'quit'")
+  var searchResults;
+  switch(displayOption){
+    case "age":
+
+      break;
+    case "height":
+      searchResults = searchByHeight(people);
+      searchByCharacteristics(searchResults);
+      break;
+    case "weight":
+      break;
+    case "occupation":
+      break;
+    case "color":
+      break;
+    case "done":
+      break;
+    case "restart":
+      app(people); // restart
+      break;
+    case "quit":
+      return; // stop execution
+    default:
+      return searchByCharacteristics(people);
+  }
 }
 
 function uppercaseWords(phrase) {
@@ -275,4 +281,58 @@ function getDescendants(person,people) {
     return descendants;
   }
   // displayPeople(descendants);
+}
+function exactRange(input) {
+  return input.toLowerCase() == "exact"||input.toLowerCase() == "range";
+}
+function checkIfInteger(input) {
+  return Number.isInteger(parseFloat(input));
+}
+function searchByHeight(people) {
+  var searchOption = promptFor("Do you know the exact height? Type 'exact'.\n" +
+                               "Otherwise type 'range'",exactRange).toLowerCase();
+  var peopleMatchingCriteria;
+  switch(searchOption){
+    case "exact":
+      peopleMatchingCriteria = searchExactHeight(people);
+      break;
+    case "range":
+      peopleMatchingCriteria = searchRangeHeight(people);
+      break;
+    default:
+      searchByHeight(people);
+  }
+
+  if (peopleMatchingCriteria.length == 0) {
+    alert("No individuals found matching these criteria.")
+    return searchByCharacteristics(people);
+  }
+
+  return peopleMatchingCriteria
+}
+function searchExactHeight(people) {
+  var searchHeight = parseFloat(promptFor("Enter the exact height of the person (in inches):", checkIfInteger));
+  var peopleMatchingCriteria = people.filter(function(person){
+    if (person.height == searchHeight) {
+      return true;        
+    }
+    else {
+      return false;
+    }
+  })
+  return peopleMatchingCriteria;
+}
+
+function searchRangeHeight(people) {
+  var searchHeightLow = parseFloat(promptFor("Enter the minimum height of the person (in inches):", checkIfInteger));
+  var searchHeightHigh = parseFloat(promptFor("Enter the maximum height of the person (in inches):", checkIfInteger));
+  var peopleMatchingCriteria = people.filter(function(person){
+    if (person.height >= searchHeightLow && person.height <= searchHeightHigh) {
+      return true;        
+    }
+    else {
+      return false;
+    }
+  })
+  return peopleMatchingCriteria;
 }
