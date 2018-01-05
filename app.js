@@ -1,3 +1,4 @@
+"use strict";
 /*
 Build all of your functions for displaying and gathering information below (GUI).
 */
@@ -126,19 +127,23 @@ function searchByCharacteristics(people) {
   var searchResults;
   switch(displayOption){
     case "age":
-
+      searchResults = searchByAge(people);
+      searchByCharacteristics(searchResults);
       break;
     case "height":
       searchResults = searchByHeight(people);
       searchByCharacteristics(searchResults);
       break;
     case "weight":
+      searchResults = searchByWeight(people);
+      searchByCharacteristics(searchResults);
       break;
     case "occupation":
       break;
     case "color":
       break;
     case "done":
+      displayPeople(people);
       break;
     case "restart":
       app(people); // restart
@@ -328,6 +333,109 @@ function searchRangeHeight(people) {
   var searchHeightHigh = parseFloat(promptFor("Enter the maximum height of the person (in inches):", checkIfInteger));
   var peopleMatchingCriteria = people.filter(function(person){
     if (person.height >= searchHeightLow && person.height <= searchHeightHigh) {
+      return true;        
+    }
+    else {
+      return false;
+    }
+  })
+  return peopleMatchingCriteria;
+}
+
+function searchByWeight(people) {
+  var searchOption = promptFor("Do you know the exact weight? Type 'exact'.\n" +
+                               "Otherwise type 'range'",exactRange).toLowerCase();
+  var peopleMatchingCriteria;
+  switch(searchOption){
+    case "exact":
+      peopleMatchingCriteria = searchExactWeight(people);
+      break;
+    case "range":
+      peopleMatchingCriteria = searchRangeWeight(people);
+      break;
+    default:
+      searchByWeight(people);
+  }
+
+  if (peopleMatchingCriteria.length == 0) {
+    alert("No individuals found matching these criteria.")
+    return searchByCharacteristics(people);
+  }
+
+  return peopleMatchingCriteria
+}
+function searchExactWeight(people) {
+  var searchWeight = parseFloat(promptFor("Enter the exact Weight of the person (in pounds):", checkIfInteger));
+  var peopleMatchingCriteria = people.filter(function(person){
+    if (person.weight == searchWeight) {
+      return true;        
+    }
+    else {
+      return false;
+    }
+  })
+  return peopleMatchingCriteria;
+}
+
+function searchRangeWeight(people) {
+  var searchWeightLow = parseFloat(promptFor("Enter the minimum weight of the person (in pounds):", checkIfInteger));
+  var searchWeightHigh = parseFloat(promptFor("Enter the maximum weight of the person (in pounds):", checkIfInteger));
+  var peopleMatchingCriteria = people.filter(function(person){
+    if (person.weight >= searchWeightLow && person.weight <= searchWeightHigh) {
+      return true;        
+    }
+    else {
+      return false;
+    }
+  })
+  return peopleMatchingCriteria;
+}
+function searchByAge(people) {
+  var peopleWithAge = people.map(function(person){
+    var personAge = getAge(person.dob);
+    person.age = personAge;
+    return person;
+  });
+  var searchOption = promptFor("Do you know the exact age? Type 'exact'.\n" +
+                               "Otherwise type 'range'",exactRange).toLowerCase();
+  var peopleMatchingCriteria;
+  switch(searchOption){
+    case "exact":
+      peopleMatchingCriteria = searchExactAge(peopleWithAge);
+      break;
+    case "range":
+      peopleMatchingCriteria = searchRangeAge(peopleWithAge);
+      break;
+    default:
+      searchByAge(people);
+  }
+
+  if (peopleMatchingCriteria.length == 0) {
+    alert("No individuals found matching these criteria.")
+    return searchByCharacteristics(people);
+  }
+
+  return peopleMatchingCriteria
+
+}
+function searchExactAge(people) {
+  var searchAge = parseFloat(promptFor("Enter the exact age of the person:", checkIfInteger));
+  var peopleMatchingCriteria = people.filter(function(person){
+    if (person.age == searchAge) {
+      return true;        
+    }
+    else {
+      return false;
+    }
+  })
+  return peopleMatchingCriteria;
+}
+
+function searchRangeAge(people) {
+  var searchAgeLow = parseFloat(promptFor("Enter the minimum age of the person:", checkIfInteger));
+  var searchAgeHigh = parseFloat(promptFor("Enter the maximum age of the person:", checkIfInteger));
+  var peopleMatchingCriteria = people.filter(function(person){
+    if (person.age >= searchAgeLow && person.age <= searchAgeHigh) {
       return true;        
     }
     else {
